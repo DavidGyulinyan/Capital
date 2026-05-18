@@ -85,7 +85,12 @@ export default function MathCalculator({
   toolsMenuItems,
 }: MathCalculatorProps) {
   const { user } = useAuth();
-  const { calculatorHistory: supabaseHistory, saveCalculation, clearAllCalculations } = useCalculatorHistory();
+  const {
+    calculatorHistory: supabaseHistory,
+    saveCalculation,
+    clearAllCalculations,
+    loading: historyLoading,
+  } = useCalculatorHistory();
   const { t, tWithParams } = useLanguage();
   const backgroundColor = useThemeColor({}, "background");
   const surfaceColor = useThemeColor({}, "surface");
@@ -119,27 +124,27 @@ export default function MathCalculator({
   const isSmallScreen = height < 700;
   const isMediumScreen = height >= 700 && height < 800;
 
-  // Initialize local history with Supabase history when component becomes visible
+  // Sync local history with Supabase when logged in
   useEffect(() => {
-    if (visible && user && supabaseHistory.length > 0) {
+    if (!visible || !user || historyLoading) return;
+
+    if (supabaseHistory.length > 0) {
       const formattedHistory = supabaseHistory
         .filter((record): record is NonNullable<typeof record> => record != null)
         .map((record) => formatCalculatorHistoryDisplay(record));
-      setCalculationHistory(prev => {
-        // Merge Supabase history with any existing local history, avoiding duplicates
+      setCalculationHistory((prev) => {
         const merged = [...formattedHistory];
-        prev.forEach(localCalc => {
+        prev.forEach((localCalc) => {
           if (!merged.includes(localCalc)) {
             merged.push(localCalc);
           }
         });
-        return merged.slice(0, 15); // Keep only 15 most recent
+        return merged.slice(0, 15);
       });
-    } else if (visible && !user) {
-      // For non-authenticated users, keep local history
-      setCalculationHistory(prev => prev);
+    } else {
+      setCalculationHistory([]);
     }
-  }, [visible, user, supabaseHistory]);
+  }, [visible, user, supabaseHistory, historyLoading]);
 
   const getResponsiveValue = (small: number, medium: number, large: number) => {
     if (isSmallScreen) return small;
@@ -691,14 +696,13 @@ export default function MathCalculator({
   );
 
   const clearHistory = async () => {
+    setCalculationHistory([]);
+    if (!user) return;
+
     try {
-      const success = await clearAllCalculations();
-      if (success) {
-        // Clear local history as well
-        setCalculationHistory([]);
-      }
+      await clearAllCalculations();
     } catch (error) {
-      console.error('Error clearing calculator history:', error);
+      console.error("Error clearing calculator history:", error);
     }
   };
 
@@ -747,12 +751,11 @@ export default function MathCalculator({
 
   const HistoryView = () => {
     // Combine Supabase history with local history for display
-    const displayHistory =
-      user && supabaseHistory.length > 0
-        ? supabaseHistory
-            .filter((record): record is NonNullable<typeof record> => record != null)
-            .map((record) => formatCalculatorHistoryDisplay(record))
-        : calculationHistory;
+    const displayHistory = user
+      ? supabaseHistory
+          .filter((record): record is NonNullable<typeof record> => record != null)
+          .map((record) => formatCalculatorHistoryDisplay(record))
+      : calculationHistory;
 
     return (
       <View
