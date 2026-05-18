@@ -91,6 +91,8 @@ const translations = {
     'converter.professional': 'Professional currency converter with real-time rates and advanced features',
     'converter.conversionResult': '{amount} {fromCurrency} = {convertedAmount} {toCurrency}',
     'converter.exchangeRateResult': '{rateLabel}: 1 {fromCurrency} = {rate} {toCurrency}',
+    'converter.cbaRateNotice':
+      'Official Central Bank of Armenia (cba.am) rate for {currencies}.',
     'converter.backToDashboard': '← Back to Dashboard',
     'converter.amountLabel': 'Amount',
     'converter.enterAmountPlaceholder': 'Enter amount',
@@ -621,6 +623,8 @@ const translations = {
     'converter.professional': 'Արժույթի պրոֆեսիոնալ փոխանակում',
     'converter.conversionResult': '{amount} {fromCurrency} = {convertedAmount} {toCurrency}',
     'converter.exchangeRateResult': '{rateLabel}: 1 {fromCurrency} = {rate} {toCurrency}',
+    'converter.cbaRateNotice':
+      'Պաշտոնական ՀՀ Կենտրոնական բանկի (cba.am) դրույք՝ {currencies} համար։',
     'converter.backToDashboard': '← Վերադարձ դեպի վահանակ',
     
     // Settings & Common
@@ -649,7 +653,8 @@ const translations = {
     'settings.dataManagement': 'Տվյալների կառավարում',
     'settings.exchangeRateInfo': 'Տվյալներ փոխարժեքի մասին',
     'settings.aboutExchangeRates': 'Փոխարժեքի մասին',
-    'settings.exchangeRateInfoDescription': 'Փոխարժեքի մասին տվյալները թարմացվում են ժամը մեկ անգամ',
+    'settings.exchangeRateInfoDescription':
+      'Փոխարժեքները թարմացվում են ժամը մեկ անգամ։ CBA-ում հրապարակված արժույթների դեպքում AMD-ի դեպքում կիրառվում է cba.am պաշտոնական դրույքը։',
     'settings.clearCache': 'Մաքրել քեշը',
     'settings.clearAllData': 'Մաքրել բոլոր տվյալները',
     'settings.aboutSupport': 'Ծանոթություն և աջակցություն',
